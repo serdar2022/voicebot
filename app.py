@@ -43,9 +43,10 @@ def transcribe_with_assemblyai(file_path):
 
 def summarize_text_with_openrouter(text):
     headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json"
+    "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+    "Content-Type": "application/json"
     }
+
 
     data = {
         "model": "anthropic/claude-3-sonnet",
