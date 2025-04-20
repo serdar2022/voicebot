@@ -9,12 +9,11 @@ from email.mime.base import MIMEBase
 from email import encoders
 from email.mime.multipart import MIMEMultipart
 
-# Load secrets from environment (required for Railway)
+# ✅ Load secrets from environment variables
 ASSEMBLY_API_KEY = os.environ.get("ASSEMBLY_API_KEY")
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
 SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD")
-
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -45,9 +44,10 @@ def transcribe_with_assemblyai(file_path):
 
 def summarize_text_with_openrouter(text):
     headers = {
-        "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json"
     }
+
     data = {
         "model": "anthropic/claude-3-sonnet",
         "max_tokens": 1000,
@@ -77,7 +77,6 @@ def send_email(subject, recipient, attachment_paths=None):
     msg['Subject'] = subject
     msg['From'] = SENDER_EMAIL
     msg['To'] = recipient
-
     msg.attach(MIMEText("Please find the transcription and summary attached.", 'plain'))
 
     if attachment_paths:
@@ -124,5 +123,5 @@ def upload_file():
     return jsonify({'message': 'Transcription complete', 'text': transcription})
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # Railway injects PORT
+    port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
