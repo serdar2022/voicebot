@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Audio</title>
+</head>
+<body>
+  <h2>Upload Audio</h2>
+  <div id="email-container" style="border:1px solid #ccc; padding:10px; min-height:40px;">
+	<input type="text" id="emailInput" placeholder="Enter email and press Enter" style="border:none;outline:none;">
+  </div>
+  <input type="hidden" id="emailList" name="emailList" />
+
+  <br><br>
+  <input type="file" id="audioFile" accept="audio/*" />
+  <br><br>
+  <button onclick="uploadAudio()">Upload</button>
+  <p id="responseMsg"></p>
+
+<script>
+async function uploadAudio() {
+  const fileInput = document.getElementById('audioFile');
+  const file = fileInput.files[0];
+
+  if (!file || emails.length === 0) {
+    alert('Please select a file and enter at least one email.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('audio', file);
+  formData.append('recipient', document.getElementById('emailList').value);
+
+  const response = await fetch('/upload', {
+    method: 'POST',
+    body: formData
+  });
+
+  const result = await response.json();
+  document.getElementById('responseMsg').textContent = result.message || result.error;
+}
+
+</script>
+<script>
+  const emailContainer = document.getElementById('email-container');
+  const emailInput = document.getElementById('emailInput');
+  const emailListInput = document.getElementById('emailList');
+  const emails = [];
+
+  emailInput.addEventListener('keydown', function (e) {
+	if (e.key === 'Enter' || e.key === ',') {
+	  e.preventDefault();
+	  const email = emailInput.value.trim();
+	  if (email && !emails.includes(email)) {
+		emails.push(email);
+		addEmailTag(email);
+		emailListInput.value = emails.join(',');
+		emailInput.value = '';
+	  }
+	}
+  });
+
+  function addEmailTag(email) {
+	const tag = document.createElement('span');
+	tag.textContent = email;
+	tag.style.cssText = 'display:inline-block;padding:4px 8px;margin:2px;background:#e0e0e0;border-radius:4px;';
+	emailContainer.insertBefore(tag, emailInput);
+  }
+</script>
+
+</body>
+</html>
