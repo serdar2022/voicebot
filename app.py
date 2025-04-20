@@ -10,10 +10,11 @@ from email import encoders
 from email.mime.multipart import MIMEMultipart
 
 # Load secrets from environment (required for Railway)
-ASSEMBLY_API_KEY = os.environ['ASSEMBLY_API_KEY']
-OPENROUTER_API_KEY = os.environ['OPENROUTER_API_KEY']
-SENDER_EMAIL = os.environ['SENDER_EMAIL']
-SENDER_PASSWORD = os.environ['SENDER_PASSWORD']
+ASSEMBLY_API_KEY = os.environ.get("ASSEMBLY_API_KEY")
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
+SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
+SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD")
+
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
