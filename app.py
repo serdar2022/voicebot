@@ -9,10 +9,11 @@ from email.mime.base import MIMEBase
 from email import encoders
 from email.mime.multipart import MIMEMultipart
 
-ASSEMBLY_API_KEY = '1cfced456ed0499c8d67290d2a1272e1'  # Your actual AssemblyAI key 
-OPENROUTER_API_KEY = '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'  # Your actual OpenRouter API key 
-SENDER_EMAIL = 'serdar1392@gmail.com'
-SENDER_PASSWORD = 'uvxr mzqo jbue nmdi'
+# Load secrets from environment (required for Railway)
+ASSEMBLY_API_KEY = os.environ['ASSEMBLY_API_KEY']
+OPENROUTER_API_KEY = os.environ['OPENROUTER_API_KEY']
+SENDER_EMAIL = os.environ['SENDER_EMAIL']
+SENDER_PASSWORD = os.environ['SENDER_PASSWORD']
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -43,11 +44,9 @@ def transcribe_with_assemblyai(file_path):
 
 def summarize_text_with_openrouter(text):
     headers = {
-    "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
-    "Content-Type": "application/json"
+        "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+        "Content-Type": "application/json"
     }
-
-
     data = {
         "model": "anthropic/claude-3-sonnet",
         "max_tokens": 1000,
@@ -58,7 +57,7 @@ def summarize_text_with_openrouter(text):
 
     try:
         response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
-        print("\U0001F50D OpenRouter Raw Response:", response.text)
+        print("🔍 OpenRouter Raw Response:", response.text)
         result = response.json()
         return result["choices"][0]["message"]["content"]
     except Exception as e:
